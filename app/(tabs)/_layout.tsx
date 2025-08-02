@@ -9,6 +9,7 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
+  console.log('app/(tabs)/_layout.tsx');
   const colorScheme = useColorScheme();
 
   return (

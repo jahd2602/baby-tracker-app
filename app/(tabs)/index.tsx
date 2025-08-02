@@ -10,6 +10,7 @@ const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
 const base = airtable.base(AIRTABLE_BASE_ID);
 
 export default function HomeScreen() {
+  console.log('app/(tabs)/index.tsx');
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
