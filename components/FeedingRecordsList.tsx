@@ -20,19 +20,34 @@ interface FeedingRecordsListProps {
   records: FeedingRecord[];
 }
 
-const renderItem = ({ item }: { item: FeedingRecord }) => (
-  <ThemedView style={styles.itemContainer}>
-    <ThemedText type="defaultSemiBold">Day {item.Day} - {item['Start Time']}</ThemedText>
-    <ThemedText>Feeding Type: {item['Feeding Type']}</ThemedText>
-    {item['Feeding Amount (ml)'] && <ThemedText>Amount: {item['Feeding Amount (ml)']}ml</ThemedText>}
-    <View style={styles.checksContainer}>
-      <ThemedText>L: {item.L ? '✅' : '❌'}</ThemedText>
-      <ThemedText>R: {item.R ? '✅' : '❌'}</ThemedText>
-      <ThemedText>Urine: {item.Urine ? '✅' : '❌'}</ThemedText>
-      <ThemedText>BM: {item.BM ? '✅' : '❌'}</ThemedText>
+const renderRecordItem = ({ item }: { item: FeedingRecord }) => (
+  <View style={styles.recordRow}>
+    <ThemedText style={styles.recordColStartTime}>{item['Start Time']}</ThemedText>
+    <ThemedText style={styles.recordColCheck}>{item.L ? '✅' : ''}</ThemedText>
+    <ThemedText style={styles.recordColCheck}>{item.R ? '✅' : ''}</ThemedText>
+    <ThemedText style={styles.recordColCheck}>{item.Urine ? '✅' : ''}</ThemedText>
+    <ThemedText style={styles.recordColCheck}>{item.BM ? '✅' : ''}</ThemedText>
+    <ThemedText style={styles.recordColTypeAmount}>
+      {item['Feeding Type']}
+      {item['Feeding Amount (ml)'] ? ` ${item['Feeding Amount (ml)']}ml` : ''}
+    </ThemedText>
+    <ThemedText style={styles.recordColNotes}>{item.Notes}</ThemedText>
+  </View>
+);
+
+const DayHeader = ({ day }: { day: number }) => (
+  <View>
+    <ThemedText type="subtitle" style={styles.dayTitle}>Day {day}</ThemedText>
+    <View style={styles.headerRow}>
+      <ThemedText style={styles.headerColStartTime}>Start Time</ThemedText>
+      <ThemedText style={styles.headerColCheck}>L</ThemedText>
+      <ThemedText style={styles.headerColCheck}>R</ThemedText>
+      <ThemedText style={styles.headerColCheck}>Urine</ThemedText>
+      <ThemedText style={styles.headerColCheck}>BM</ThemedText>
+      <ThemedText style={styles.headerColTypeAmount}>Type/Amount</ThemedText>
+      <ThemedText style={styles.headerColNotes}>Notes</ThemedText>
     </View>
-    {item.Notes && <ThemedText>Notes: {item.Notes}</ThemedText>}
-  </ThemedView>
+  </View>
 );
 
 export default function FeedingRecordsList({ records }: FeedingRecordsListProps) {
@@ -55,10 +70,10 @@ export default function FeedingRecordsList({ records }: FeedingRecordsListProps)
       keyExtractor={(day) => day.toString()}
       renderItem={({ item: day }) => (
         <View>
-          <ThemedText type="subtitle" style={styles.dayTitle}>Day {day}</ThemedText>
+          <DayHeader day={parseInt(day)} />
           <FlatList
             data={groupedRecords[day]}
-            renderItem={renderItem}
+            renderItem={renderRecordItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.dayListContainer}
           />
@@ -74,23 +89,67 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   dayListContainer: {
-    paddingLeft: 16,
-  },
-  itemContainer: {
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  checksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 8,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
   dayTitle: {
     marginTop: 20,
     marginBottom: 10,
     marginLeft: 5,
+    backgroundColor: '#e0e0e0',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 8,
+    backgroundColor: '#f0f0f0',
+  },
+  headerColStartTime: {
+    width: 80,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  headerColCheck: {
+    width: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  headerColTypeAmount: {
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  headerColNotes: {
+    flex: 2,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  recordRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  recordColStartTime: {
+    width: 80,
+    textAlign: 'center',
+  },
+  recordColCheck: {
+    width: 40,
+    textAlign: 'center',
+  },
+  recordColTypeAmount: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  recordColNotes: {
+    flex: 2,
+    textAlign: 'left',
+    paddingLeft: 5,
   },
 });

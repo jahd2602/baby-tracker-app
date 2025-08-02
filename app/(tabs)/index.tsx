@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Button, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
@@ -48,22 +49,27 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.headerContainer}>
-        <ThemedText type="title">Feeding Tracker</ThemedText>
-        <Button title="Refresh" onPress={fetchData} />
+    <SafeAreaView style={styles.safeArea}>
+      <ThemedView style={styles.container}>
+        <ThemedView style={styles.headerContainer}>
+          <ThemedText type="title">Feeding Tracker</ThemedText>
+          <Button title="Refresh" onPress={fetchData} />
+        </ThemedView>
+        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FeedingRecordsList records={records} />
+        )}
       </ThemedView>
-      <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FeedingRecordsList records={records} />
-      )}
-    </ThemedView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 16,
