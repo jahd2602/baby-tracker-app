@@ -24,7 +24,7 @@ export default function HomeScreen() {
     }).eachPage((records, fetchNextPage) => {
       setRecords(records.map(record => ({ id: record.id, ...record.fields })).sort((a, b) => {
         if (a.Day === b.Day) {
-          return new Date(`2000/01/01 ${b['Start Time']}`).getTime() - new Date(`2000/01/01 ${a['Start Time']}`).getTime();
+          return new Date(`2000/01/01 ${a['Start Time']}`).getTime() - new Date(`2000/01/01 ${b['Start Time']}`).getTime();
         }
         return b.Day - a.Day;
       }));
