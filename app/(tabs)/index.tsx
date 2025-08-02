@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, View, Text, Button, ActivityIndicator } from 'rea
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@env';
+import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@/constants/environment';
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
