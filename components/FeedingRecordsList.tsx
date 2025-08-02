@@ -36,11 +36,34 @@ const renderItem = ({ item }: { item: FeedingRecord }) => (
 );
 
 export default function FeedingRecordsList({ records }: FeedingRecordsListProps) {
+  // Group records by day
+  const groupedRecords = records.reduce((acc, record) => {
+    const day = record.Day;
+    if (!acc[day]) {
+      acc[day] = [];
+    }
+    acc[day].push(record);
+    return acc;
+  }, {});
+
+  // Sort days in descending order
+  const sortedDays = Object.keys(groupedRecords).sort((a, b) => parseInt(b) - parseInt(a));
+
   return (
     <FlatList
-      data={records}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
+      data={sortedDays}
+      keyExtractor={(day) => day.toString()}
+      renderItem={({ item: day }) => (
+        <View>
+          <ThemedText type="subtitle" style={styles.dayTitle}>Day {day}</ThemedText>
+          <FlatList
+            data={groupedRecords[day]}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.dayListContainer}
+          />
+        </View>
+      )}
       contentContainerStyle={styles.listContainer}
     />
   );
@@ -49,6 +72,9 @@ export default function FeedingRecordsList({ records }: FeedingRecordsListProps)
 const styles = StyleSheet.create({
   listContainer: {
     paddingBottom: 32,
+  },
+  dayListContainer: {
+    paddingLeft: 16,
   },
   itemContainer: {
     marginBottom: 16,
@@ -61,5 +87,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 8,
+  },
+  dayTitle: {
+    marginTop: 20,
+    marginBottom: 10,
+    marginLeft: 5,
   },
 });
