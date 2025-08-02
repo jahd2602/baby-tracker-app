@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, View, Text, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Button, ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@/constants/environment';
+import FeedingRecordsList from '@/components/FeedingRecordsList';
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
@@ -41,21 +42,6 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, []);
 
-  const renderItem = ({ item }) => (
-    <ThemedView style={styles.itemContainer}>
-      <ThemedText type="defaultSemiBold">Day {item.Day} - {item['Start Time']}</ThemedText>
-      <ThemedText>Feeding Type: {item['Feeding Type']}</ThemedText>
-      {item['Feeding Amount (ml)'] && <ThemedText>Amount: {item['Feeding Amount (ml)']}ml</ThemedText>}
-      <View style={styles.checksContainer}>
-        <ThemedText>L: {item.L ? '✅' : '❌'}</ThemedText>
-        <ThemedText>R: {item.R ? '✅' : '❌'}</ThemedText>
-        <ThemedText>Urine: {item.Urine ? '✅' : '❌'}</ThemedText>
-        <ThemedText>BM: {item.BM ? '✅' : '❌'}</ThemedText>
-      </View>
-      {item.Notes && <ThemedText>Notes: {item.Notes}</ThemedText>}
-    </ThemedView>
-  );
-
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.headerContainer}>
@@ -66,12 +52,7 @@ export default function HomeScreen() {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <FlatList
-          data={records}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
-        />
+        <FeedingRecordsList records={records} />
       )}
     </ThemedView>
   );
@@ -91,20 +72,5 @@ const styles = StyleSheet.create({
   lastUpdatedText: {
     textAlign: 'center',
     marginBottom: 16,
-  },
-  listContainer: {
-    paddingBottom: 32,
-  },
-  itemContainer: {
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  checksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 8,
   },
 });
