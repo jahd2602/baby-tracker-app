@@ -30,9 +30,9 @@ const renderRecordItem = ({ item }: { item: FeedingRecord }) => (
     <View style={styles.chipContainer}>
       <ThemedText style={styles.chipText}>
         {item['Feeding Type']}
-        {item['Feeding Amount (ml)'] ? ` ${item['Feeding Amount (ml)']}ml` : ''}
       </ThemedText>
     </View>
+    {item['Feeding Amount (ml)'] && <ThemedText style={styles.recordColAmount}>{item['Feeding Amount (ml)']}ml</ThemedText>}
     <ThemedText style={styles.recordColNotes}>{item.Notes}</ThemedText>
   </View>
 );
@@ -158,6 +158,11 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  recordColAmount: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 2,
   },
   recordColNotes: {
     flex: 2,
