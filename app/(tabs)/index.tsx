@@ -19,23 +19,25 @@ export default function HomeScreen() {
 
   const fetchData = () => {
     setLoading(true);
+    let allRecords = [];
     base('Feeding Tracker').select({
       sort: [{ field: 'Day', direction: 'desc' }, { field: 'Start Time', direction: 'desc' }]
     }).eachPage((records, fetchNextPage) => {
-      setRecords(records.map(record => ({ id: record.id, ...record.fields })).sort((a, b) => {
-        if (a.Day === b.Day) {
-          return new Date(`2000/01/01 ${a['Start Time']}`).getTime() - new Date(`2000/01/01 ${b['Start Time']}`).getTime();
-        }
-        return b.Day - a.Day;
-      }));
-      setLoading(false);
-      setLastUpdated(new Date());
+      allRecords = [...allRecords, ...records.map(record => ({ id: record.id, ...record.fields }))];
       fetchNextPage();
     }, (err) => {
       if (err) {
         console.error(err);
-        setLoading(false);
+      } else {
+        setRecords(allRecords.sort((a, b) => {
+          if (a.Day === b.Day) {
+            return new Date(`2000/01/01 ${a['Start Time']}`).getTime() - new Date(`2000/01/01 ${b['Start Time']}`).getTime();
+          }
+          return b.Day - a.Day;
+        }));
       }
+      setLoading(false);
+      setLastUpdated(new Date());
     });
   };
 
