@@ -55,7 +55,7 @@ export default function HomeScreen() {
           <ThemedText type="title">Feeding Tracker</ThemedText>
           <Button title="Refresh" onPress={fetchData} />
         </ThemedView>
-        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
+        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()} (Auto-refresh every minute)</ThemedText>
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
