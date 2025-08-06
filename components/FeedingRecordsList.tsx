@@ -27,10 +27,12 @@ const renderRecordItem = ({ item }: { item: FeedingRecord }) => (
     <ThemedText style={styles.recordColCheck}>{item.R ? '✅' : ''}</ThemedText>
     <ThemedText style={styles.recordColCheck}>{item.Urine ? '✅' : ''}</ThemedText>
     <ThemedText style={styles.recordColCheck}>{item.BM ? '✅' : ''}</ThemedText>
-    <ThemedText style={styles.recordColTypeAmount}>
-      {item['Feeding Type']}
-      {item['Feeding Amount (ml)'] ? ` ${item['Feeding Amount (ml)']}ml` : ''}
-    </ThemedText>
+    <View style={styles.chipContainer}>
+      <ThemedText style={styles.chipText}>
+        {item['Feeding Type']}
+        {item['Feeding Amount (ml)'] ? ` ${item['Feeding Amount (ml)']}ml` : ''}
+      </ThemedText>
+    </View>
     <ThemedText style={styles.recordColNotes}>{item.Notes}</ThemedText>
   </View>
 );
@@ -143,9 +145,19 @@ const styles = StyleSheet.create({
     width: 40,
     textAlign: 'center',
   },
-  recordColTypeAmount: {
+  chipContainer: {
     flex: 1,
-    textAlign: 'center',
+    backgroundColor: '#e0e0e0', // Light grey background for the chip
+    borderRadius: 15, // Rounded corners
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginHorizontal: 5, // Add some margin to separate from other columns
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chipText: {
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   recordColNotes: {
     flex: 2,
