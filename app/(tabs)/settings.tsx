@@ -4,6 +4,10 @@ import { StyleSheet, Button, TextInput } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Card } from '@/components/Card';
 
 const DEFAULT_DAY_1_DATE = '2025-07-28'; // YYYY-MM-DD
 const DAY_1_DATE_KEY = 'day1Date';
@@ -35,21 +39,29 @@ export default function SettingsScreen() {
     }
   };
 
+  const colorScheme = useColorScheme();
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Settings</ThemedText>
-      <ThemedView style={styles.settingItem}>
-        <ThemedText>Date of Day 1 (YYYY-MM-DD):</ThemedText>
-        <TextInput
-          style={styles.input}
-          value={day1Date}
-          onChangeText={setDay1Date}
-          placeholder="YYYY-MM-DD"
-        />
-        <Button title="Save" onPress={saveDay1Date} />
+    <LinearGradient
+      colors={[Colors[colorScheme ?? 'light'].background, '#FFFBF0']}
+      style={styles.container}
+    >
+      <ThemedView style={styles.container}>
+        <ThemedText type="title" style={{ fontFamily: 'SpaceMono' }}>Settings</ThemedText>
+        <Card>
+          <ThemedView style={styles.settingItem}>
+            <ThemedText style={{ fontFamily: 'SpaceMono' }}>Date of Day 1 (YYYY-MM-DD):</ThemedText>
+            <TextInput
+              style={styles.input}
+              value={day1Date}
+              onChangeText={setDay1Date}
+              placeholder="YYYY-MM-DD"
+            />
+            <Button title="Save" onPress={saveDay1Date} />
+          </ThemedView>
+        </Card>
       </ThemedView>
-      
-    </ThemedView>
+    </LinearGradient>
   );
 }
 
@@ -58,7 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    backgroundColor: 'transparent',
   },
   settingItem: {
     flexDirection: 'row',
@@ -71,6 +83,6 @@ const styles = StyleSheet.create({
     padding: 8,
     marginLeft: 10,
     flex: 1,
+    fontFamily: 'SpaceMono',
   },
-  
 });
