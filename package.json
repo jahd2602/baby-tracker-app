@@ -9,8 +9,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "predeploy": "npx expo export --platform web && mkdir -p dist/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts && cp -R node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/* dist/assets/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/",
-    "deploy": "gh-pages --nojekyll -d dist"
+    "predeploy": "npx expo export --platform web",
+    "deploy": "touch ./dist/.nojekyll && gh-pages --nojekyll -d dist"
   },
   "homepage": "https://jahd2602.github.io/baby-tracker-app/",
   "dependencies": {
