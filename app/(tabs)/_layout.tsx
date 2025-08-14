@@ -39,6 +39,13 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
+            href: null,
+            unmountOnBlur: true,
+          }}
+        />
+        <Tabs.Screen
+          name="records"
+          options={{
             title: 'Records',
             tabBarIcon: ({ color }) => <IconSymbol size={28} name="list.bullet" color={color} />,
           }}
