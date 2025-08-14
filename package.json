@@ -5,11 +5,14 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "predeploy": "npx expo export --platform web",
+    "deploy": "gh-pages -d dist"
   },
+  "homepage": "https://jahd2602.github.io/baby-tracker-app/",
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "^1.23.1",
@@ -46,6 +49,7 @@
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "gh-pages": "^6.1.1",
     "typescript": "~5.8.3"
   },
   "private": true
