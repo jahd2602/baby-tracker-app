@@ -76,7 +76,7 @@ export default function HomeScreen() {
             <MaterialIcons name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
           </TouchableOpacity>
         </ThemedView>
-        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()} (Auto-refresh every minute)</ThemedText>
+        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
         {loading ? (
           <ActivityIndicator size="large" color={Colors[colorScheme ?? 'light'].tint} />
         ) : (

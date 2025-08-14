@@ -3,7 +3,8 @@
 // It fetches the data from Airtable and calculates the time difference.
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, View, ActivityIndicator, TouchableOpacity, AppState } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -29,6 +30,7 @@ export default function HomeScreen() {
   const [lastFeeding, setLastFeeding] = useState<{ time: string; timeAgo: string; dayNumber: number } | null>(null);
   const [futureTimes, setFutureTimes] = useState<{ threeHours: string; fourHours: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(new Date()); // Added lastUpdated state
 
   const fetchLastFeeding = useCallback(() => {
     setLoading(true);
@@ -39,11 +41,13 @@ export default function HomeScreen() {
       if (err) {
         console.error(err);
         setLoading(false);
+        setLastUpdated(new Date()); // Update lastUpdated even on error
         return;
       }
 
       if (!records) {
         setLoading(false);
+        setLastUpdated(new Date()); // Update lastUpdated even if no records
         return;
       }
 
@@ -106,7 +110,27 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetchLastFeeding();
+    const interval = setInterval(() => {
+      fetchLastFeeding();
+    }, 60000); // Auto-refresh every minute
+
+    const appStateSubscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        fetchLastFeeding(); // Refresh when app comes to foreground
+      }
+    });
+
+    return () => {
+      clearInterval(interval);
+      appStateSubscription.remove();
+    };
   }, [fetchLastFeeding]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchLastFeeding();
+    }, [fetchLastFeeding])
+  );
 
   const colorScheme = useColorScheme();
 
@@ -120,15 +144,13 @@ export default function HomeScreen() {
           <MaterialIcons name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
         </TouchableOpacity>
         <ThemedText type="title">Last Feeding</ThemedText>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors[colorScheme ?? 'light'].tint} />
-        ) : lastFeeding ? (
+        {lastFeeding ? (
           <Card>
             <View style={styles.feedingInfo}>
               <ThemedText style={styles.time}>{lastFeeding.timeAgo}</ThemedText>
               <View style={styles.row}>
-                <ThemedText style={styles.dayNumber}>(Day {lastFeeding.dayNumber})</ThemedText>
                 <ThemedText style={styles.timeAgo}>{lastFeeding.time}</ThemedText>
+                <ThemedText style={styles.dayNumber}>(Day {lastFeeding.dayNumber})</ThemedText>
               </View>
             </View>
             {futureTimes && (
@@ -147,6 +169,12 @@ export default function HomeScreen() {
         ) : (
           <ThemedText>No feeding data found.</ThemedText>
         )}
+        {loading && ( // Show ActivityIndicator only when loading
+          <ActivityIndicator size="small" color={Colors[colorScheme ?? 'light'].tint} style={styles.loadingIndicator} />
+        )}
+        <ThemedText style={styles.lastUpdatedText}>
+          Last updated: {lastUpdated.toLocaleTimeString()}
+        </ThemedText>
       </ThemedView>
     </LinearGradient>
   );
@@ -197,5 +225,13 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     zIndex: 1,
+  },
+  lastUpdatedText: {
+    textAlign: 'center',
+    marginBottom: 16,
+    fontFamily: 'SpaceMono',
+  },
+  loadingIndicator: {
+    marginTop: 10,
   },
 });
