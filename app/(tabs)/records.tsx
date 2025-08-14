@@ -10,6 +10,9 @@ import FeedingRecordsList from '@/components/FeedingRecordsList';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { FeedingRecord } from '@/components/FeedingRecordsList';
+
+
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
@@ -22,7 +25,7 @@ const base = airtable.base(AIRTABLE_BASE_ID);
 
 export default function HomeScreen() {
   console.log('app/(tabs)/index.tsx');
-  const [records, setRecords] = useState([]);
+  const [records, setRecords] = useState<FeedingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -30,11 +33,11 @@ export default function HomeScreen() {
 
   const fetchData = () => {
     setLoading(true);
-    let allRecords = [];
+    let allRecords: FeedingRecord[] = [];
     base('Feeding Tracker').select({
       sort: [{ field: 'Day', direction: 'desc' }, { field: 'Start Time', direction: 'desc' }]
     }).eachPage((records, fetchNextPage) => {
-      allRecords = [...allRecords, ...records.map(record => ({ id: record.id, ...record.fields }))];
+      allRecords = [...allRecords, ...records.map(record => ({ id: record.id, Day: record.get('Day') as number, 'Start Time': record.get('Start Time') as string, 'Feeding Type': (record.get('Feeding Type') as string || '') }))];
       fetchNextPage();
     }, (err) => {
       if (err) {

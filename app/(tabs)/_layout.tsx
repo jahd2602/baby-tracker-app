@@ -40,7 +40,6 @@ export default function TabLayout() {
           name="index"
           options={{
             href: null,
-            unmountOnBlur: true,
           }}
         />
         <Tabs.Screen

@@ -1,9 +1,14 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-export const Card = ({ children, style }) => {
+interface CardProps {
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const Card = ({ children, style }: CardProps) => {
   const cardBackgroundColor = useThemeColor({}, 'card');
 
   return (

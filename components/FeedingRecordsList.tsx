@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-interface FeedingRecord {
+export interface FeedingRecord {
   id: string;
   Day: number;
   'Start Time': string;
@@ -61,7 +61,7 @@ export default function FeedingRecordsList({ records }: FeedingRecordsListProps)
     }
     acc[day].push(record);
     return acc;
-  }, {});
+  }, {} as Record<number, FeedingRecord[]>);
 
   // Sort days in descending order
   const sortedDays = Object.keys(groupedRecords).sort((a, b) => parseInt(b) - parseInt(a));
@@ -74,7 +74,7 @@ export default function FeedingRecordsList({ records }: FeedingRecordsListProps)
         <View>
           <DayHeader day={parseInt(day)} />
           <FlatList
-            data={groupedRecords[day]}
+            data={groupedRecords[parseInt(day)]}
             renderItem={renderRecordItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.dayListContainer}

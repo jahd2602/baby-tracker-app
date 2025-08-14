@@ -17,6 +17,11 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
+
+// Ensure AIRTABLE_BASE_ID is defined
+if (!AIRTABLE_BASE_ID) {
+  throw new Error('AIRTABLE_BASE_ID is not defined in environment variables.');
+}
 const base = airtable.base(AIRTABLE_BASE_ID);
 
 export default function HomeScreen() {
@@ -37,6 +42,11 @@ export default function HomeScreen() {
         return;
       }
 
+      if (!records) {
+        setLoading(false);
+        return;
+      }
+
       console.log('Received records:', records);
 
       const feedingRecords = records.filter(record => record.get('Feeding Type'));
@@ -47,9 +57,9 @@ export default function HomeScreen() {
         console.log('Last record:', lastRecord);
 
         const startTime = lastRecord.get('Start Time');
-        const day = lastRecord.get('Day');
+        const day = lastRecord.get('Day') as number;
 
-        if (startTime && day) {
+        if (typeof startTime === 'string' && day) {
           const now = new Date();
           const [hours, minutes] = startTime.split(':').map(Number);
 
@@ -78,7 +88,7 @@ export default function HomeScreen() {
           const threeHoursLater = new Date(entryDate.getTime() + 3 * 60 * 60 * 1000);
           const fourHoursLater = new Date(entryDate.getTime() + 4 * 60 * 60 * 1000);
 
-          const formatTime = (date) => {
+          const formatTime = (date: Date) => {
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
