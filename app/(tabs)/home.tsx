@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     fontFamily: 'SpaceMono',
+    lineHeight: 48,
   },
   timeAgo: {
     fontSize: 18,
