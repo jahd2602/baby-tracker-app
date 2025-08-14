@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.example.babytracker"
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +35,23 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "@bittingz/expo-widgets"
+      [
+        "@bittingz/expo-widgets",
+        {
+          "ios": {
+            "src": "./widgets/ios"
+          },
+          "android": {
+            "src": "./widgets/android/main",
+            "widgets": [
+              {
+                "name": "MyWidgetProvider",
+                "resourceName": "@xml/my_widget_info"
+              }
+            ]
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
