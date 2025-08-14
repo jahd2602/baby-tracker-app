@@ -9,6 +9,10 @@ import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@/constants/environment';
 import { useDay1Date } from '../../contexts/Day1DateContext';
+import { Card } from '@/components/Card';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
@@ -93,13 +97,19 @@ export default function HomeScreen() {
     fetchLastFeeding();
   }, [day1DateString]); // Re-run effect when day1DateString changes
 
+  const colorScheme = useColorScheme();
+
   return (
-    <ThemedView style={styles.container}>
+    <LinearGradient
+      colors={[Colors[colorScheme ?? 'light'].background, '#FFFBF0']}
+      style={{flex: 1}}
+    >
+      <ThemedView style={styles.container}>
       <ThemedText type="title">Last Feeding</ThemedText>
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={Colors[colorScheme ?? 'light'].tint} />
       ) : lastFeeding ? (
-        <>
+        <Card>
           <View style={styles.feedingInfo}>
             <ThemedText style={styles.time}>{lastFeeding.timeAgo}</ThemedText>
             <View style={styles.row}>
@@ -119,11 +129,12 @@ export default function HomeScreen() {
               </View>
             </View>
           )}
-        </>
+        </Card>
       ) : (
         <ThemedText>No feeding data found.</ThemedText>
       )}
     </ThemedView>
+    </LinearGradient>
   );
 }
 
@@ -132,22 +143,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   feedingInfo: {
     alignItems: 'center',
-    marginTop: 20,
   },
   time: {
-    fontSize: 48,
+    fontSize: 40,
     fontWeight: 'bold',
+    fontFamily: 'SpaceMono',
   },
   timeAgo: {
     fontSize: 18,
     marginHorizontal: 5,
+    fontFamily: 'SpaceMono',
   },
   dayNumber: {
     fontSize: 18,
     marginHorizontal: 5,
+    fontFamily: 'SpaceMono',
   },
   row: {
     flexDirection: 'row',
@@ -155,11 +169,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   futureTimesContainer: {
-    marginTop: 40,
+    marginTop: 20,
     alignItems: 'center',
   },
   futureTimeText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
+    fontFamily: 'SpaceMono',
   },
 });
