@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Card } from '@/components/Card';
 import { ThemedText } from '@/components/ThemedText';
@@ -13,6 +13,11 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Initialize Airtable
 const airtable = new Airtable({ apiKey: AIRTABLE_API_KEY });
+
+// Ensure AIRTABLE_BASE_ID is defined
+if (!AIRTABLE_BASE_ID) {
+  throw new Error('AIRTABLE_BASE_ID is not defined in environment variables.');
+}
 const base = airtable.base(AIRTABLE_BASE_ID);
 
 export default function HomeScreen() {
