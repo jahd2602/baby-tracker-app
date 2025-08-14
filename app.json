@@ -23,7 +23,15 @@
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "publicPath": "/baby-tracker-app/"
+      "publicPath": "/baby-tracker-app/",
+      "name": "Baby Tracker",
+      "shortName": "Baby Tracker",
+      "description": "A simple baby feeding tracker.",
+      "display": "standalone",
+      "start_url": "/baby-tracker-app/",
+      "background_color": "#ffffff",
+      "theme_color": "#ffffff",
+      "orientation": "portrait"
     },
     "plugins": [
       "expo-router",
