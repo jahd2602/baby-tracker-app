@@ -5,8 +5,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, View, ActivityIndicator, TouchableOpacity, AppState } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import { ThemedText } from '@/components/ThemedText';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@/constants/environment';
@@ -141,7 +142,7 @@ export default function HomeScreen() {
     >
       <ThemedView style={styles.container}>
         <TouchableOpacity style={styles.refreshButton} onPress={fetchLastFeeding}>
-          <MaterialIcons name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
+          <IconSymbol name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
         </TouchableOpacity>
         <ThemedText type="title">Last Feeding</ThemedText>
         {lastFeeding ? (

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import { Card } from '@/components/Card';
 import { ThemedText } from '@/components/ThemedText';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 import { ThemedView } from '@/components/ThemedView';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '@/constants/environment';
@@ -35,17 +36,18 @@ export default function HomeScreen() {
     setLoading(true);
     let allRecords: FeedingRecord[] = [];
     base('Feeding Tracker').select({
-      sort: [{ field: 'Day', direction: 'desc' }, { field: 'Start Time', direction: 'desc' }]
+      sort: [{ field: 'Day', direction: 'desc' }, { field: 'Start Time', direction: 'asc' }]
     }).eachPage((records, fetchNextPage) => {
-      allRecords = [...allRecords, ...records.map(record => ({ id: record.id, Day: record.get('Day') as number, 'Start Time': record.get('Start Time') as string, 'Feeding Type': (record.get('Feeding Type') as string || '') }))];
-      fetchNextPage();
+      
+      allRecords = [...allRecords, ...records.map(record => ({ id: record.id, ...record.fields, Day: record.get('Day') as number, 'Start Time': record.get('Start Time') as string, 'Feeding Type': (record.get('Feeding Type') as string || ''), 'Feeding Amount (ml)': record.get('Feeding Amount (ml)') as number | undefined, L: record.get('L') as boolean | undefined, R: record.get('R') as boolean | undefined, Urine: record.get('Urine') as boolean | undefined, BM: record.get('BM (Bowel Movement)') as boolean | undefined, Notes: record.get('Notes') as string | undefined }))];
+      if (fetchNextPage) { fetchNextPage(); }
     }, (err) => {
       if (err) {
         console.error(err);
       } else {
         setRecords(allRecords.sort((a, b) => {
           if (a.Day === b.Day) {
-            return new Date(`2000/01/01 ${a['Start Time']}`).getTime() - new Date(`2000/01/01 ${b['Start Time']}`).getTime();
+            return new Date(`2000/01/01 ${b['Start Time']}`).getTime() - new Date(`2000/01/01 ${a['Start Time']}`).getTime();
           }
           return b.Day - a.Day;
         }));
@@ -73,7 +75,7 @@ export default function HomeScreen() {
         <ThemedView style={styles.headerContainer}>
           <ThemedText type="title" style={{ fontFamily: 'SpaceMono' }}>Feeding Tracker</ThemedText>
           <TouchableOpacity onPress={fetchData} style={styles.refreshButton}>
-            <MaterialIcons name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
+            <IconSymbol name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
           </TouchableOpacity>
         </ThemedView>
         <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>

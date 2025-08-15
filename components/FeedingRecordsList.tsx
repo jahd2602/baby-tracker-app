@@ -3,6 +3,25 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+const getChipColor = (feedingType: string) => {
+  const normalizedType = feedingType.toLowerCase(); // Normalize to lowercase
+  switch (normalizedType) {
+    case 'breastfeeding':
+    case 'breast milk':
+      return '#ADD8E6'; // Light Blue
+    case 'mom\'s milk':
+      return '#E0BBE4'; // Light Purple
+    case 'donor milk':
+      return '#00FFFF'; // Cyan
+    case 'formula':
+      return '#FFFFE0'; // Light Yellow
+    case 'solid food':
+      return '#90EE90'; // Light Green
+    default:
+      return '#e0e0e0'; // Default light grey
+  }
+};
+
 export interface FeedingRecord {
   id: string;
   Day: number;
@@ -12,7 +31,7 @@ export interface FeedingRecord {
   L?: boolean;
   R?: boolean;
   Urine?: boolean;
-  BM?: boolean;
+  'BM (Bowel Movement)'?: boolean;
   Notes?: string;
 }
 
@@ -20,22 +39,31 @@ interface FeedingRecordsListProps {
   records: FeedingRecord[];
 }
 
-const renderRecordItem = ({ item }: { item: FeedingRecord }) => (
-  <View style={styles.recordRow}>
+const renderRecordItem = ({ item }: { item: FeedingRecord }) => {
+  console.log('Rendered item:', item);
+  return (
+    <View style={styles.recordRow}>
     <ThemedText style={styles.recordColStartTime}>{item['Start Time']}</ThemedText>
     <ThemedText style={styles.recordColCheck}>{item.L ? '✅' : ''}</ThemedText>
     <ThemedText style={styles.recordColCheck}>{item.R ? '✅' : ''}</ThemedText>
     <ThemedText style={styles.recordColCheck}>{item.Urine ? '✅' : ''}</ThemedText>
-    <ThemedText style={styles.recordColCheck}>{item.BM ? '✅' : ''}</ThemedText>
-    <View style={styles.chipContainer}>
-      <ThemedText style={styles.chipText}>
-        {item['Feeding Type']}
-      </ThemedText>
-    </View>
-    {item['Feeding Amount (ml)'] && <ThemedText style={styles.recordColAmount}>{item['Feeding Amount (ml)']}ml</ThemedText>}
+    <ThemedText style={styles.recordColCheck}>{item['BM (Bowel Movement)'] ? '✅' : ''}</ThemedText>
+    {((Array.isArray(item['Feeding Type']) ? item['Feeding Type'].join(', ') : item['Feeding Type']) || '').split(',').map((type, index) => (
+      <View key={index} style={[styles.chipContainer, { backgroundColor: getChipColor(type.trim()) }]}>
+        <ThemedText style={styles.chipText}>
+          {type.trim()}
+        </ThemedText>
+      </View>
+    ))}
+    {item['Feeding Amount (ml)'] && (
+      <View style={[styles.chipContainer, styles.amountChipContainer]}>
+        <ThemedText style={styles.chipText}>{item['Feeding Amount (ml)']}ml</ThemedText>
+      </View>
+    )}
     <ThemedText style={styles.recordColNotes}>{item.Notes}</ThemedText>
   </View>
-);
+  );
+};
 
 const DayHeader = ({ day }: { day: number }) => (
   <View>
@@ -46,8 +74,7 @@ const DayHeader = ({ day }: { day: number }) => (
       <ThemedText style={styles.headerColCheck}>R</ThemedText>
       <ThemedText style={styles.headerColCheck}>Urine</ThemedText>
       <ThemedText style={styles.headerColCheck}>BM</ThemedText>
-      <ThemedText style={styles.headerColTypeAmount}>Type/Amount</ThemedText>
-      <ThemedText style={styles.headerColNotes}>Notes</ThemedText>
+      <ThemedText style={styles.headerColTypeAmount}>Type / Amount / Notes</ThemedText>
     </View>
   </View>
 );
@@ -126,7 +153,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   headerColNotes: {
-    flex: 2,
+    flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -159,13 +186,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
+  amountChipContainer: {
+    backgroundColor: '#d3d3d3', // Light gray for amount chip
+    marginLeft: 5, // Add some margin to separate from type chip
+  },
   recordColAmount: {
     fontSize: 10,
     textAlign: 'center',
     marginTop: 2,
   },
   recordColNotes: {
-    flex: 2,
+    flex: 1,
     textAlign: 'left',
     paddingLeft: 5,
   },
