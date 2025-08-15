@@ -72,13 +72,15 @@ export default function HomeScreen() {
       style={styles.safeArea}
     >
       <ThemedView style={styles.container}>
-        <ThemedView style={styles.headerContainer}>
-          <ThemedText type="title" style={{ fontFamily: 'SpaceMono' }}>Feeding Tracker</ThemedText>
+        
+        <ThemedView style={styles.refreshAndUpdateContainer}>
+          <ThemedView style={{ flex: 1, alignItems: 'center' }}>
+            <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
+          </ThemedView>
           <TouchableOpacity onPress={fetchData} style={styles.refreshButton}>
             <IconSymbol name="refresh" size={24} color={Colors[colorScheme ?? 'light'].tint} />
           </TouchableOpacity>
         </ThemedView>
-        <ThemedText style={styles.lastUpdatedText}>Last updated: {lastUpdated.toLocaleTimeString()}</ThemedText>
         {loading ? (
           <ActivityIndicator size="large" color={Colors[colorScheme ?? 'light'].tint} />
         ) : (
@@ -108,9 +110,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
   },
+    refreshAndUpdateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
   lastUpdatedText: {
     textAlign: 'center',
-    marginBottom: 16,
     fontFamily: 'SpaceMono',
   },
   refreshButton: {
@@ -121,4 +129,4 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
   },
-});
+}); // Closing brace for StyleSheet.create
